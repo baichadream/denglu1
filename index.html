@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+  <meta name="apple-mobile-web-app-title" content="CodePen">
+  <link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+  <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg" color="#111" />
+
+  <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-2c7831bb44f98c1391d6a4ffda0e1fd302503391ca806e7fcc7b9b87197aec26.js"></script>
+
+  <title>CodePen - Animation Login Form</title>
+  <link rel="canonical" href="https://codepen.io/ruben-vardanyan/pen/RwKRwYR">
+
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: sans-serif;
+      background: url("bc4504cc20134baba18dd1a3d247f302.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* 添加的白色毛玻璃长方形 */
+    .red-rectangle {
+      width: 1700px; /* 长1700px */
+      height: 1000px; /* 高1000px */
+      background: rgba(255, 255, 255, 0.7); /* 半透明白色 */
+      position: absolute;
+      top: 50%; /* 垂直居中 */
+      left: 50%; /* 水平居中 */
+      transform: translate(-50%, -50%); /* 向左和向上移动自身宽度和高度的一半 */
+      z-index: -1; /* 确保它在其他内容的后面 */
+      border-radius: 40px; /* 圆角 */
+      backdrop-filter: blur(15px); /* 毛玻璃效果 */
+    }
+
+    /* 添加的白色圆角正方形 */
+    .red-square {
+      width: 870px; /* 正方形宽870px */
+      height: 870px; /* 正方形高870px */
+      background-color: rgba(255, 255, 255, 0.7); /* 白色 */
+      position: absolute;
+      top: calc(50% - 435px); /* 垂直居中 */
+      left: calc(50% - 785px); /* 水平居中并移位 */
+      z-index: 0; /* 确保它在其他内容的上面 */
+      border-radius: 40px; /* 圆角 */
+      backdrop-filter: blur(15px); /* 毛玻璃效果 */
+      overflow: hidden; /* 确保内容不会溢出 */
+    }
+
+    /* 图片样式 */
+    .image-slide {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 1s ease;
+    }
+
+    /* main box */
+    .main-box {
+      width: 640px; /* 原宽度320px的两倍 */
+      height: 960px; /* 原高度480px的两倍 */
+      position: absolute;
+      right: calc(0px + 60px);
+      top: calc(50%); /* 中心位置 */
+      left: calc(50% - 320px + 500px); /* 向右移动500px */
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 40px; /* 原圆角20px的两倍 */
+      background: rgba(27, 27, 27, 0.3); /* 更加透明的半透明黑色背景 */
+      backdrop-filter: blur(15px); /* 添加较强的毛玻璃效果 */
+    }
+
+    .form-box {
+      width: 632px; /* 原宽度316px的两倍 */
+      height: 952px; /* 原高度476px的两倍 */
+      position: relative;
+      background: rgba(27, 27, 27, 0.05); /* 更加透明的半透明黑色背景 */
+      padding: 10px;
+      overflow: hidden;
+      z-index: 5;
+      border-radius: 40px; /* 原圆角20px的两倍 */
+      backdrop-filter: blur(15px); /* 添加较强的毛玻璃效果 */
+    }
+
+    /* 青色窗口样式 */
+    .cyan-window {
+      width: 400px; /* 窗口宽度 */
+      height: 200px; /* 窗口高度 */
+      background-color: cyan; /* 窗口青色 */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); /* 居中 */
+      border-radius: 20px; /* 圆角 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px; /* 字体大小 */
+      color: #000; /* 字体颜色 */
+      z-index: 10; /* 窗口在最上层 */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 添加阴影效果 */
+      text-align: center; /* 居中对齐 */
+      display: none; /* 初始时隐藏 */
+    }
+
+    .sp {
+      position: absolute;
+      transition: 0.5s;
+    }
+
+    .button-box {
+      width: 440px; /* 原宽度220px的两倍 */
+      margin: 70px auto 60px auto; /* 原margin的两倍 */
+      position: relative;
+      border-radius: 60px; /* 原圆角30px的两倍 */
+      display: flex;
+      justify-content: space-around;
+      animation: animBTN 5s linear infinite;
+    }
+
+    @keyframes animBTN {
+      0% {
+        box-shadow: 0 0 20px 18px rgba(3, 169, 244, 0.3);
+      }
+      33% {
+        box-shadow: 0 0 20px 18px rgba(244, 65, 165, 0.3);
+      }
+      66.9% {
+        box-shadow: 0 0 20px 18px rgba(255, 235, 59, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 20px 18px rgba(3, 169, 244, 0.3);
+      }
+    }
+
+    .toggle-btn {
+      padding: 20px 60px; /* 原padding的两倍 */
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      font-size: 28px; /* 原font-size的两倍 */
+      font-weight: bold;
+      color: rgb(234, 234, 235);
+      outline: none;
+      position: relative;
+      transition: 0.5s;
+    }
+
+    #btn {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 220px; /* 原宽度110px的两倍 */
+      height: 100%;
+      background: linear-gradient(to left, #57AAB4, #57AAB4);
+      border-radius: 60px; /* 原圆角30px的两倍 */
+      transition: 0.5s;
+    }
+
+    .social-icons {
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
+
+    .icon-link {
+      display: flex;
+      background: transparent;
+      width: 100px; /* 原宽度50px的两倍 */
+      height: 100px; /* 原高度50px的两倍 */
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      border-radius: 50%;
+      margin: 0px 20px; /* 原margin的两倍 */
+      box-shadow: 12px 12px 20px -3px rgba(234, 234, 235, 0.1),
+        -12px -12px 20px -3px rgba(37, 37, 37, 0.7);
+      border: 2px solid rgba(234, 234, 235, 0.09); /* 原border的两倍 */
+      transition: transform 0.5s;
+    }
+
+    .cont-icon {
+      color: #57AAB4;
+      font-size: 56px; /* 原font-size的两倍 */
+      transition: transform 0.5s;
+    }
+
+    .icon-link:hover {
+      box-shadow: inset 8px 8px 12px -3px rgba(234, 234, 235, 0.2),
+        inset 8px 8px 12px -3px rgba(37, 37, 37, 0.7),
+        0 0 10px #57AAB4,
+        0 0 50px #57AAB4,
+        0 0 100px #57AAB4,
+        0 0 200px #03e9f4;
+      transform: translateY(4px); /* 原translateY的两倍 */
+    }
+
+    .icon-link:hover .cont-icon {
+      transform: scale(0.95);
+    }
+
+    .icon-link:hover .fa-facebook {
+      color: #57AAB4;
+    }
+
+    .icon-link:hover .fa-instagram {
+      color: #57AAB4;
+    }
+
+    .icon-link:hover .fa-github {
+      color: #57AAB4;
+    }
+
+    .input-group {
+      width: 640px; /* 原宽度320px的两倍 */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      top: 360px; /* 原top的两倍 */
+      position: absolute;
+      padding: 0 60px; /* 原padding的两倍 */
+      transition: 0.5s;
+      box-sizing: border-box;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 20px 10px; /* 原padding的两倍 */
+      margin: 20px 0; /* 原margin的两倍 */
+      border-top: 0;
+      border-left: 4px solid #57AAB4; /* 原2px的两倍 */
+      border-right: 0;
+      border-bottom: 4px solid #57AAB4; /* 原2px的两倍 */
+      outline: none;
+      background: transparent;
+      color: rgb(234, 234, 235);
+      font-size: 30px; /* 原15px的两倍 */
+      transition: 0.5s;
+    }
+
+    .input-field:focus {
+      border-left: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      animation: animINP 5s linear infinite, animBTN 5s linear infinite;
+    }
+
+    .submit-btn {
+      width: 85%;
+      padding: 20px 60px; /* 原padding的两倍 */
+      cursor: pointer;
+      display: block;
+      margin: 60px auto 0 auto; /* 原margin的两倍 */
+      background: linear-gradient(to right, #03a9f4, #57AAB4, #03a9f4);
+      border: 0;
+      outline: none;
+      border-radius: 60px; /* 原圆角30px的两倍 */
+      position: relative;
+      z-index: 5;
+      box-sizing: border-box;
+      color: #fff;
+      font-weight: bold;
+      font-size: 30px; /* 原15px的两倍 */
+      transition: 0.5s;
+    }
+
+    .submit-btn:hover {
+      background: #57AAB4;
+      color: #fff;
+      border-radius: 60px; /* 原圆角30px的两倍 */
+      box-shadow: 0 0 10px #57AAB4,
+        0 0 50px #57AAB4,
+        0 0 100px #57AAB4,
+        0 0 200px #03e9f4;
+    }
+
+    .span {
+      margin: 40px 0; /* 原margin的两倍 */
+      color: rgb(234, 234, 235);
+      font-size: 24px; /* 原font-size的两倍 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .check-box {
+      margin: 0 20px; /* 原margin的两倍 */
+      padding: 0;
+    }
+
+    #login {
+      left: 0px;
+    }
+
+    #register {
+      left: 1000px; /* 原left的两倍 */
+    }
+
+    @keyframes a {
+      0% {
+        background-position: 0%;
+      }
+      100% {
+        background-position: 400%;
+      }
+    }
+
+    @keyframes animBTN {
+      0% {
+        box-shadow: 0 0 20px 18px rgba(3, 169, 244, 0.3);
+      }
+      33% {
+        box-shadow: 0 0 20px 18px rgba(244, 65, 165, 0.3);
+      }
+      66.9% {
+        box-shadow: 0 0 20px 18px rgba(255, 235, 59, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 20px 18px rgba(3, 169, 244, 0.3);
+      }
+    }
+
+    /* 新增的登录动画CSS */
+    .login-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #FFA500;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .login-animation.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .login-logo {
+      width: 100px;
+      height: 100px;
+      background-color: #FFD700;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 60px;
+      color: #FFA500;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .login-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #FFF;
+      border-top: 5px solid #FFD700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite; /* 添加旋转动画 */
+      margin-top: 10px; /* 改为10px，使其在闪电徽标下方 */
+      margin-left: 20px; /* 向右移动20px */
+    }
+
+    .loading-text {
+      margin-top: 10px; /* 调整与圈圈的间距 */
+      color: #FFF; /* 设置文本颜色为白色 */
+      font-size: 20px; /* 设置字体大小 */
+      text-align: center; /* 居中对齐 */
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+  </style>
+
+  <script>
+    window.console = window.console || function(t) {};
+  </script>
+
+</head>
+
+<body translate="no">
+  <div class="red-rectangle"></div> <!-- 添加的白色毛玻璃长方形 -->
+  <div class="red-square"> <!-- 添加的白色圆角正方形 -->
+    <img id="slider" class="image-slide" src="600cb2888b81c9f4771708676665ef11.png" alt="Slider Image">
+  </div>
+  <div class="hero">
+    <div class="main-box">
+      <div class="form-box">
+        <div id="after"></div>
+        <div class="button-box">
+          <div id="btn"></div>
+          <button id="log" type="button" class="toggle-btn" onclick="login()">Log in</button>
+          <button id="reg" type="button" class="toggle-btn" onclick="register()">Register</button>
+        </div>
+        <div class="social-icons">
+          <a class="icon-link" href="#">
+            <i class="fab fa-facebook cont-icon"></i>
+          </a>
+          <a class="icon-link" href="#">
+            <i class="fab fa-instagram cont-icon"></i>
+          </a>
+          <a class="icon-link" href="#">
+            <i class="fab fa-github cont-icon"></i>
+          </a>
+        </div>
+        <form id="login" class="input-group" onsubmit="return validateLogin(event)">
+          <input type="text" class="input-field" placeholder="User" required>
+          <input id="pwd" type="Password" class="input-field" placeholder="Password" required>
+          <input type="submit" class="submit-btn" value="Log in">
+        </form>
+        <form id="register" class="input-group">
+          <input type="text" class="input-field" placeholder="User" required>
+          <input type="email" class="input-field" placeholder="Email" required>
+          <input id="pwd" type="Password" class="input-field" placeholder="Password" required>
+          <input type="submit" class="submit-btn" value="Register">
+        </form>
+      </div>
+      <span class="sp sp-t"></span>
+      <span class="sp sp-r"></span>
+      <span class="sp sp-b"></span>
+      <span class="sp sp-l"></span>
+    </div>
+  </div>
+
+  <!-- 新增的登录动画HTML -->
+  <div id="login-animation" class="login-animation">
+    <div class="login-content">
+      <div class="login-logo">⚡</div>
+      <div class="login-spinner"></div>
+      <div class="loading-text">loading . . .</div> <!-- 添加 loading . . . 文本 -->
+    </div>
+  </div>
+
+  <audio id="background-music" src="music.mp3" loop></audio> <!-- 添加背景音乐 -->
+
+  <script id="rendered-js">
+    let x = document.getElementById("login");
+    let y = document.getElementById("register");
+    let z = document.getElementById("btn");
+    let log = document.getElementById("log");
+    let reg = document.getElementById("reg");
+    let after = document.getElementById("after");
+    let backgroundMusic = document.getElementById("background-music"); // 获取音乐元素
+    let backgroundMusic1 = document.getElementById("background-WindowsLogon");
+
+
+    const images = [
+      "600cb2888b81c9f4771708676665ef11.png",
+      "71c86550460710299cf7693e0fd006d3.jpg",
+      "d7f03b496a252ba2604f80d9ed4f02d6.jpg",
+      "c071cdc46f0c4867a1d52d0cb51fc6d6.jpg",
+      "244ff854539b47238e13e0b41d1cc738.jpg"
+    ];
+
+    let currentIndex = 0;
+
+    function changeImage() {
+      const slider = document.getElementById("slider");
+      slider.style.opacity = 0; // 淡出效果
+      setTimeout(() => {
+        currentIndex = (currentIndex + 1) % images.length;
+        slider.src = images[currentIndex]; // 更换图片
+        slider.style.opacity = 1; // 淡入效果
+      }, 1000); // 1秒后切换图片
+    }
+
+    setInterval(changeImage, 5000); // 每五秒切换图片
+
+    function register() {
+      x.style.left = "-1000px"; /* 原左侧位置的两倍 */
+      y.style.left = "0px";
+      z.style.left = "220px"; /* 原左侧位置的两倍 */
+      log.style.color = "rgb(234, 234, 235)";
+      reg.style.color = "#252525";
+      after.style.left = "0";
+      after.style.top = "0";
+    }
+
+    // 修改 login 函数，不再播放动画
+    function login() {
+      x.style.left = "0px";
+      y.style.left = "1000px"; /* 原左侧位置的两倍 */
+      z.style.left = "0px";
+      reg.style.color = "rgb(234, 234, 235)";
+      log.style.color = "#252525";
+      after.style.left = "50%";
+      after.style.top = "0";
+    }
+
+    // 合并动画代码
+    function playLoginAnimation() {
+      const loginAnimation = document.getElementById('login-animation');
+      loginAnimation.classList.add('show');
+      backgroundMusic.play();
+
+      // 显示第一行字幕
+      setTimeout(() => {
+        const loadingText = document.querySelector('.loading-text');
+        loadingText.textContent = "你知道吗？这个网站花费了Artday团队一个月时间";
+      }, 2000); // 2秒后显示第一行
+
+      // 显示第二行字幕
+      setTimeout(() => {
+        const loadingText = document.querySelector('.loading-text');
+        loadingText.textContent = "当明天的太阳照常升起，我将又老了一天，珍惜每一个她";
+      }, 4000); // 4秒后显示第二行
+
+      // 动画时长
+      setTimeout(() => {
+        loginAnimation.classList.remove('show'); // 隐藏动画
+      }, 5000); // 5秒后隐藏动画
+    }
+
+    function validateLogin(event) {
+      event.preventDefault(); // 防止默认表单提交
+      const user = document.querySelector('#login .input-field').value;
+      const password = document.querySelector('#login #pwd').value;
+
+      if ((user === "Ideal_2YJ" && password === "114514") || (user === "admin" && password === "admin123")) {
+        playLoginAnimation(); // 在验证成功后播放动画
+        backgroundMusic.pause(); 
+        
+
+        // 等待动画完成后跳转
+        setTimeout(() => {
+          window.location.href = "https://baichadream.github.io/zhenggu/";
+        }, 5000); // 2.5秒后跳转，与动画时间相匹配
+      } else {
+        alert("用户名或密码错误!");
+      }
+    }
+
+    document.getElementById('login').addEventListener('submit', validateLogin);
+
+    // 监听空格键事件
+    document.addEventListener('keydown', function (event) {
+      if (event.code === 'Space') { // 检测是否按下空格键
+        const cyanWindow = document.getElementById("cyan-window");
+        cyanWindow.style.display = "none"; // 隐藏青色窗口
+        backgroundMusic.play(); // 播放音乐
+        event.preventDefault(); // 防止页面滚动
+      }
+    });
+
+    // 监听页面加载时
+    window.onload = function () {
+      document.getElementById("cyan-window").style.display = "flex"; // 显示青色窗口
+    };
+
+  </script>
+
+  <!-- 添加窗口 -->
+  <div class="cyan-window" id="cyan-window">
+    请按空格键以验证你是真人
+  </div>
+
+  <!-- 遮罩层 -->
+  <div class="overlay" id="overlay"></div>
+
+</body>
+
+</html>
